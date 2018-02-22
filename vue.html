@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .done{
+            color: mediumvioletred;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <input type="text" v-model="title">
+    <button @click="add">add</button>
+    <a href="#" @click="removeTasks">remove</a>
+    <h3 v-if="tasks.length">Всего задач ({{ tasks.length }}) выполненные ({{ done() }})</h3>
+
+    <ul v-if="tasks.length">
+        <li class="bar" :class="{done: task.complete}" v-for="task in tasks">
+            <input type="checkbox" v-model="task.complete">
+            {{ task.title }}
+        </li>
+    </ul>
+    <h3 v-else>Нету задач</h3>
+</div>
+
+<div id="c">
+    <hello-world v-for="person in names" :username="person.name">{{ person.description }}</hello-world>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+
+    Vue.component('hello-world', {
+        template: `
+            <div>
+                <h2>Hello {{ username }} {{ cnt }} </h2>
+                <div>
+                    <slot></slot>
+                    <button @click="cnt++">+</button>
+                </div>
+            </div>
+        `,
+
+        props: ['username'],
+
+        data: function () {
+            return {
+                cnt: 1
+            };
+        }
+    });
+
+    new Vue({
+        el: '#c',
+
+        data:{
+            names: [
+                {name: 'Neo', description: 'The people', age: 12},
+                {name: 'Neo 2', description: 'The people 2', age: 14},
+                {name: 'Neo 3', description: 'The people 3', age: 121},
+                {name: 'Neo 4', description: 'The people 4', age: 23},
+            ]
+        }
+    });
+
+    new Vue({
+        el: '#container',
+
+        mounted: function(){
+            // alert('hello');
+        },
+
+        updated: function(){
+            // console.log(arguments);
+        },
+
+        data: {
+            tasks: [],
+            title: ''
+        },
+
+        methods: {
+            add: function(){
+                this.tasks.push({
+                    title: this.title,
+                    complete: false
+                });
+
+                this.title = '';
+            },
+
+            done: function(){
+                return this.tasks.filter(function(task){
+                    return task.complete;
+                }).length;
+            },
+
+            removeTasks: function(){
+                this.tasks = this.tasks.filter(function(task){
+                    return ! task.complete;
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
